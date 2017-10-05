@@ -8,7 +8,7 @@
     <p>
       {{this.id}}. {{this.burger_name}}
 
-      <button class="updateburger" data-burgerid="{{this.id}}" data-isdevoured="{{this.devoured}}">Devour It!</button>
+      <button class="updateburger" data-burgerid="{{this.id}}" data-devoured="{{devoured}}">Devour It!</button>
     </p>
     {{/unless}}
   {{/each}}
@@ -17,12 +17,10 @@
 <h2>Burgers that met their FATE!</h2>
 
 <ul>
-  {{#each bugrers}}
+  {{#each burgers}}
     {{#if devoured}}
     <p>
       {{this.id}}. {{this.burger_name}}
-
-      <button class="updateburger" data-burgerid="{{this.id}}" data-isdevoured="{{this.devoured}}">Devour It!</button>
     </p>
     {{/if}}
   {{/each}}
@@ -31,7 +29,7 @@
 <h2>Add a Burger</h2>
 
 <form id="addburger" class="button-size">
-  <textarea type="text" name="burger__name"></textarea>
+  <textarea type="text" name="burger_name"></textarea>
   <button type="submit">Add Burger!</button>
 </form>
 
@@ -45,7 +43,7 @@
     };
 
     // Send the POST request.
-    $.ajax("/todos", {
+    $.ajax("/burgers", {
       type: "POST",
       data: newBurger
     }).then(
@@ -57,18 +55,19 @@
     );
   });
 
-  $(".updateburger").on("submit", function(event) {
-    // Make sure to preventDefault on a submit event.
+  $(".updateburger").on("click", function(event) {
+    // Make sure to preventDefault on a click event.
     event.preventDefault();
 
     var id = $(this).data("burgerid");
+    var devoured = $(this).data("devoured")
 
     var updatedBurger = {
-      devoured: $(".updateburger [this.devoured=true]")
+      devoured: devoured
     };
 
     // Send the PUT request.
-    $.ajax("/todos/" + id, {
+    $.ajax("/burgers" + id, {
       type: "PUT",
       data: updatedBurger
     }).then(
