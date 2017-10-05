@@ -1,32 +1,82 @@
-<h1>Burgers!</h1>
+<h1>Eat-DA-Burger!</h1>
 
-<h2>Burgers that haven't been devoured!</h2>
+<h2>Burgers you can DEVOUR!</h2>
 
 <ul>
   {{#each burgers}}
     {{#unless devoured}}
-      {{> burgers/burger-block devoured=true}}
+    <p>
+      {{this.id}}. {{this.burger_name}}
+
+      <button class="updateburger" data-burgerid="{{this.id}}" data-isdevoured="{{this.devoured}}">Devour It!</button>
+    </p>
     {{/unless}}
   {{/each}}
 </ul>
 
-<h2>Burgers that were devoured!</h2>
+<h2>Burgers that met their FATE!</h2>
 
 <ul>
-  {{#each burgers}}
+  {{#each bugrers}}
     {{#if devoured}}
-      {{> burgers/burger-block devoured=false}}
+    <p>
+      {{this.id}}. {{this.burger_name}}
+
+      <button class="updateburger" data-burgerid="{{this.id}}" data-isdevoured="{{this.devoured}}">Devour It!</button>
+    </p>
     {{/if}}
   {{/each}}
 </ul>
 
 <h2>Add a Burger</h2>
-<form class="create-form">
 
-  <div class="form-group">
-    <label for="burger">Burger Name:</label>
-    <input type="text" id="burger" name="name">
-  </div>
-
-  <button type="submit">Add Burger</button>
+<form id="addburger" class="button-size">
+  <textarea type="text" name="burger__name"></textarea>
+  <button type="submit">Add Burger!</button>
 </form>
+
+<script type="text/javascript">
+  $("#addburger").on("submit", function(event) {
+    // Make sure to preventDefault on a submit event.
+    event.preventDefault();
+
+    var newBurger = {
+      burger_name: $("#addburger [name=burger_name]").val().trim()
+    };
+
+    // Send the POST request.
+    $.ajax("/todos", {
+      type: "POST",
+      data: newBurger
+    }).then(
+      function() {
+        console.log("created new burger");
+        // Reload the page to get the updated list
+        location.reload();
+      }
+    );
+  });
+
+  $(".updateburger").on("submit", function(event) {
+    // Make sure to preventDefault on a submit event.
+    event.preventDefault();
+
+    var id = $(this).data("burgerid");
+
+    var updatedBurger = {
+      devoured: $(".updateburger [this.devoured=true]")
+    };
+
+    // Send the PUT request.
+    $.ajax("/todos/" + id, {
+      type: "PUT",
+      data: updatedBurger
+    }).then(
+      function() {
+        console.log("updated id ", id);
+        // Reload the page to get the updated list
+        location.reload();
+      }
+    );
+  });
+</script>
